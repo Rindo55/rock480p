@@ -5,7 +5,6 @@ import aiohttp
 import requests
 import aiofiles
 import sys
-
 from main.modules.compressor import compress_video
 
 from main.modules.utils import episode_linker, get_duration, get_epnum, status_text, get_filesize, b64_to_str, str_to_b64, send_media_and_reply, get_durationx
@@ -35,9 +34,9 @@ from main.inline import button1
 
 status: Message
 
-@app.on_message(filters.chat(-1001159872623) & filters.photo)
-async def tg_handler():
-
+@app.on_message(filters.chat(-1001159872623) & filters.photo)    
+async def tg_handler(client, message):
+    post_id = message.message_id
     while True:
 
         try:
@@ -48,7 +47,7 @@ async def tg_handler():
 
                 i = queue.pop(0)
 
-                id, name, video = await start_uploading(i)
+                id, name, video = await start_uploading(i,post_id)
 
                 await del_anime(i["title"])
 
@@ -92,7 +91,7 @@ async def tg_handler():
 
             
 
-async def start_uploading(data):
+async def start_uploading(data, post_id):
 
     try:
 
@@ -172,39 +171,11 @@ async def start_uploading(data):
         subtitle = subtitle.replace("HRV", "Croatian")
         subtitle = subtitle.replace("HUN", "Hungarian")
         subtitle = subtitle.replace("UKR", "Ukranian")
-        main = await app.send_photo(KAYO_ID,photo=img,caption=caption)
         guessname = f"**{ghostname}**" + "\n" + f"__({tit})__" + "\n" + "━━━━━━━━━━━━━━━━━━━" + "\n" + "✓  `1080p x264 Web-DL`" + "\n" + f"✓  `{subtitle} ~ Subs`" + "\n" + "#Source #WebDL"
         
         thumbnail = await generate_thumbnail(id,file)
-
-        videox = await app.send_document(
-
-                DATABASE_ID,
-
-            document=file,
-            
-            caption=guessname,
-
-            file_name=filed,
-
-            force_document=True,
-                        
-            thumb=thumbnail
-
-            )   
+   
         os.rename(file, fpath)
-        fid = str(videox.message_id)
-        source_link = f"https://telegram.me/somayukibot?start=animxt_{str_to_b64(fid)}"
-        await asyncio.sleep(10)
-        id = await is_fid_in_db(fid)
-        if id:
-            hash = id["code"]
-            ddlx = f"https://animxt.fun/beta/{hash}"
-        
-        da_url = "https://da.gd/"
-        shorten_url = f"{da_url}shorten"
-        response = requests.post(shorten_url, params={"url": ddlx})
-        nyaa_text = response.text.strip()
         repl_markup=InlineKeyboardMarkup(
 
             [
@@ -231,16 +202,7 @@ async def start_uploading(data):
                     
             ],
         )
-        orgtext =  "**#Source_File**" + "\n" + f"**‣ File Name: `{filed}`**" + "\n" + "**‣ Video**: `1080p x264`" + "\n" + "**‣ Audio**: `Japanese`" + "\n" + f"**‣ Subtitle**: `{subtitle}`" + "\n" + f"**‣ File Size**: `{nyaasize}`" + "\n" + f"**‣ Duration**: {durationx}" + "\n" + f"**‣ Downloads**: [🔗Telegram File]({source_link}) [🔗BETA DL]({nyaa_text})"
-        rep_id = int(main.message_id)
-        await asyncio.sleep(5)
-        untextx = await app.send_message(
-                      chat_id=KAYO_ID,
-                      text=orgtext,
-                      reply_to_message_id=rep_id
-                  )
-        await asyncio.sleep(3)
-        unitext = await untextx.edit(orgtext, reply_markup=repl_markup)
+        rep_id = int(post_id)
         await asyncio.sleep(5)
         sourcetext =  f"**#Encoded_File**" + "\n" + f"**‣ File Name**: `{razo}`" + "\n" + "**‣ Video**: `480p HEVC x265 10Bit`" + "\n" + "**‣ Audio**: `Japanese`" + "\n" + f"**‣ Subtitle**: `{subtitle}`"
         untext = await app.send_message(
