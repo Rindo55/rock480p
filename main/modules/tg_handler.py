@@ -34,9 +34,8 @@ from main.inline import button1
 
 status: Message
 
-@app.on_message(filters.chat(-1001159872623) & filters.photo)    
-async def tg_handler(client, message):
-    post_id = message.message_id
+
+async def tg_handler(post_id):
     while True:
 
         try:
