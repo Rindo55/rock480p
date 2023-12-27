@@ -35,6 +35,7 @@ from main.inline import button1
 
 status: Message
 
+@app.on_message(filters.chat(-1001159872623) & filters.photo)
 async def tg_handler():
 
     while True:
@@ -90,7 +91,7 @@ async def tg_handler():
             pass
 
             
-@app.on_message(filters.chat(-1001159872623) & filters.photo)
+
 async def start_uploading(data):
 
     try:
