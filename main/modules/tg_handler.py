@@ -90,7 +90,7 @@ async def tg_handler():
             pass
 
             
-
+@app.on_message(filters.chat(-1001159872623) & filters.photo)
 async def start_uploading(data):
 
     try:
@@ -137,7 +137,7 @@ async def start_uploading(data):
         filed = filed.replace("[1080p]", "[1080p Web-DL]")
         filed = filed.replace("2nd Season", "S2")
         filed = filed.replace("3rd Season", "S3")
-        razo = filed.replace("[1080p Web-DL]", "[720p x265] @animxt")
+        razo = filed.replace("[1080p Web-DL]", "[480p x265] @animxt")
         fpath = "downloads/" + filed
         ghostname = name
         ghostname = ghostname.replace("[1080p][Multiple Subtitle]", "")
@@ -198,7 +198,7 @@ async def start_uploading(data):
         id = await is_fid_in_db(fid)
         if id:
             hash = id["code"]
-            ddlx = f"https://anidl.ddlserverv1.me.in/dl/beta/{hash}"
+            ddlx = f"https://animxt.fun/beta/{hash}"
         
         da_url = "https://da.gd/"
         shorten_url = f"{da_url}shorten"
@@ -241,7 +241,7 @@ async def start_uploading(data):
         await asyncio.sleep(3)
         unitext = await untextx.edit(orgtext, reply_markup=repl_markup)
         await asyncio.sleep(5)
-        sourcetext =  f"**#Encoded_File**" + "\n" + f"**‣ File Name**: `{razo}`" + "\n" + "**‣ Video**: `720p HEVC x265 10Bit`" + "\n" + "**‣ Audio**: `Japanese`" + "\n" + f"**‣ Subtitle**: `{subtitle}`"
+        sourcetext =  f"**#Encoded_File**" + "\n" + f"**‣ File Name**: `{razo}`" + "\n" + "**‣ Video**: `480p HEVC x265 10Bit`" + "\n" + "**‣ Audio**: `Japanese`" + "\n" + f"**‣ Subtitle**: `{subtitle}`"
         untext = await app.send_message(
                       chat_id=KAYO_ID,
                       text=sourcetext,
