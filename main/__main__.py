@@ -25,7 +25,5 @@ async def start_bot(bot, message):
   
   await idle()
   print("[INFO]: BOT STOPPED")
-  await app.stop()  
-  for task in asyncio.all_tasks():
-    task.cancel()
+  await app.run()  
 
