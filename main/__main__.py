@@ -18,7 +18,10 @@ async def start_bot(bot, message: Message):
   print("==================================")
   print("[INFO]: AutoAnimeBot Started Bot Successfully")
   print("==========JOIN @Latest_ongoing_airing_animes=========")
-
+  print("[INFO]: Adding Parsing Task")
+  asyncio.create_task(auto_parser())
+  asyncio.create_task(tg_handler(post_id))
+  
   await idle()
   print("[INFO]: BOT STOPPED")
   await app.stop()  
