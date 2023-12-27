@@ -9,29 +9,33 @@ from main.modules.tg_handler import tg_handler
 
 loop = asyncio.get_event_loop()
 
-@app.on_message(filters.command(["help","ping"]))
+@app.on_message(filters.command(["help", "ping"]))
 async def start(bot, message: Message):
-  return await message.reply_text("⚡ **Bot Is up...**")
+    await message.reply_text("⚡ **Bot Is up...**")
+
 @app.on_message(filters.chat(-1001159872623) & filters.photo)    
-async def start_bot(bot, message: Message):
-  post_id = message.message_id
-  print("==================================")
-  print("[INFO]: AutoAnimeBot Started Bot Successfully")
-  print("==========JOIN @Latest_ongoing_airing_animes=========")
-  print("[INFO]: Adding Parsing Task")
-  asyncio.create_task(auto_parser())
-  asyncio.create_task(tg_handler(post_id))
-  
-  await idle()
-  print("[INFO]: BOT STOPPED")
-  await app.stop()  
-  for task in asyncio.all_tasks():
-    task.cancel()
+async def start_bot(_, message: Message):  # Changed parameter name 'bot' to '_'
+    post_id = message.message_id
+    print("==================================")
+    print("[INFO]: AutoAnimeBot Started Bot Successfully")
+    print("==========JOIN @Latest_ongoing_airing_animes=========")
+    print("[INFO]: Adding Parsing Task")
+    
+    # Using gather to run tasks concurrently
+    await asyncio.gather(auto_parser(), tg_handler(post_id))
+    
+    print("[INFO]: BOT STOPPED")
 
 if __name__ == "__main__":
-  install()
-  with closing(loop):
-    with suppress(asyncio.exceptions.CancelledError):
-      loop.run_until_complete(start_bot(bot,message))
-      loop.run_until_complete(asyncio.sleep(3.0))
-
+    install()
+    
+    # Use a try-except block to handle exceptions and ensure proper cleanup
+    try:
+        loop.run_until_complete(idle())
+    except KeyboardInterrupt:
+        print("[INFO]: BOT STOPPED DUE TO KEYBOARD INTERRUPT")
+    finally:
+        loop.run_until_complete(app.stop())
+        for task in asyncio.all_tasks():
+            task.cancel()
+        loop.close()
